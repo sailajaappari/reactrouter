@@ -1,16 +1,16 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router, Route, hashHistory, IndexRoute } from 'react-router'  
+import { Router, Route, hashHistory, IndexRoute, Link, ReactRouter, browserHistory } from 'react-router'  
 
 var MainLayout = React.createClass({
   render: function () {
     return (
       <div className="app">
-        <header className="primary-header" />
-        <aside className="primary-aside" />
-        <main>
-          {this.props.children}
-        </main>
+        <ul>
+          <li><Link to="/home">Home</Link></li>
+          <li><Link to="/search">Search</Link></li>
+        </ul>
+        <div>{this.props.children}</div>  
       </div>
     );
   }
@@ -19,7 +19,7 @@ var MainLayout = React.createClass({
 var Home = React.createClass({
   render: function() {
     return (
-      <div><h1>Welcome to home page</h1></div>
+      <div><h2>Welcome to home page</h2></div>
     );
   }
 });
@@ -28,12 +28,13 @@ var SearchLayout = React.createClass({
   render: function () {
     return (
       <div className="search">
-        <header className="search-header" />
+        <ul>
+          <li><Link to="/search/users" activeClassName="active">Users</Link></li>
+          <li><Link to="/search/widget">Widgets</Link></li>
+        </ul>
         <div className="results"> 
            {this.props.children}
         </div>
-        
-        <div className="serach-footer" /> 
       </div>
     );
   }
@@ -61,13 +62,15 @@ var WidgetList = React.createClass({
   }
 });
 
+//var browserHistory = ReactRouter.browserHistory;
+
 render(
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path="/" component={MainLayout}>
-      <IndexRoute component={Home} />
-      <Route path="/search" component={SearchLayout}>
-        <Route path="/search/users" component={UserList} />
-        <Route path="/search/widget" component={WidgetList} />
+      <Route path="home" component={Home} />
+      <Route path="search" component={SearchLayout}>
+        <Route path="users" component={UserList} />
+        <Route path="widget" component={WidgetList} />
       </Route>
     </Route>
   </Router>, 
