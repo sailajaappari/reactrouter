@@ -3,27 +3,44 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory, IndexRoute, Link, ReactRouter, browserHistory } from 'react-router'  
 
 var UserList = React.createClass({
-  
-  render: function () {
-    var users = [
-    {id:1, name:"Jack"},
-    {id:2, name:"Smith"},
-    {id:3, name:"Jessica"}    
-  ];
+  render: function() {
     return (
-      <ul>
-        {users.map(function(user) {
-           return (
-             <li key={user.id}>
-               <Link to="/search/users/{user.id}">{user.name}</Link>
-             </li>
-           );
-        })}
+      <ul className="user-list">
+        {this.props.users.map(this.createListItem)}
       </ul>
+    );
+  },
+
+  createListItem: function(user) {
+    return (
+      <li key={user.id}>
+        <Link to="{user.id}">{user.name}</Link>
+        <span>{user.active ? 'Active' : 'Not Active'}</span>
+        <button onClick={this.props.toggleActive.bind(null, user.id)}>toggleActive</button>
+      </li>
     );
   }
 });
 
+
+var UserListContainer = React.createClass({
+  render: function () {
+    var users = [
+      {id:1, name:"Jack", active: true},
+      {id:2, name:"Smith", active: true},
+      {id:3, name:"Jessica", active: true}    
+    ];
+    return (
+      <UserList users={users} toggleActive={this.toggleActive}/>
+    );
+  },
+  toggleActive: function (userId) {
+    var newState = Object.assign({}, this.state)
+    var user = _.find(newState.users, {id: userId});
+    user.active = !user.active
+    this.setState(newState)
+  }
+});
 
 var WidgetList = React.createClass({
   render: function() {
@@ -31,7 +48,7 @@ var WidgetList = React.createClass({
       <div><h2>Welcome to widget list</h2></div>
     );
   }
-});
+}); 
 
 
 var Home = React.createClass({
@@ -81,7 +98,7 @@ render(
     <Route path="/" component={MainLayout}>
       <Route path="home" component={Home} />
       <Route path="search" component={SearchLayout}>
-        <Route path="users" component={UserList} />
+        <Route path="users" component={UserListContainer} />
         <Route path="widget" component={WidgetList} />
       </Route>
     </Route>
