@@ -24,19 +24,32 @@ var UserList = React.createClass({
 
 
 var UserListContainer = React.createClass({
-  render: function () {
-    var users = [
+  getInitialState: function() {
+    return {
+      users: []
+    }
+  },  
+
+  componentDidMount: function() {
+   this.state.users = [
       {id:1, name:"Jack", active: true},
       {id:2, name:"Smith", active: true},
       {id:3, name:"Jessica", active: true}    
     ];
+    return this.state.users;
+  },
+  render: function () {
+   
     return (
-      <UserList users={users} toggleActive={this.toggleActive}/>
+      <UserList users={this.state.users} toggleActive={this.toggleActive}/>
     );
   },
+  
   toggleActive: function (userId) {
-    var newState = Object.assign({}, this.state)
-    var user = _.find(newState.users, {id: userId});
+    var newState = Object.assign({}, this.state.users)
+    var user = this.state.users.find(function (user) { 
+                                       if(user.id===userId)
+                                          return user;});
     user.active = !user.active
     this.setState(newState)
   }
